@@ -1,0 +1,22 @@
+<?php
+
+function eatlas_metadata_viewer_install() {
+	// Set default permissions
+	// https://api.drupal.org/api/drupal/modules%21user%21user.module/function/user_roles/7
+	$roles = user_roles();
+	foreach ($roles as $rid => $role) {
+		// https://api.drupal.org/api/drupal/modules%21user%21user.module/function/user_role_grant_permissions/7
+		user_role_grant_permissions($rid, array('view published eatlas metadata records'));
+	}
+}
+
+/**
+ * Implements hook_uninstall().
+ *     https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_uninstall/7
+ */
+function eatlas_metadata_viewer_uninstall() {
+	// Delete all persistant variables created by this module
+	eatlas_metadata_viewer_delete_settings();
+}
+
+?>

@@ -1,0 +1,105 @@
+/**
+ * CSS for viewing unpublished metadata records (when allowed).
+ * Should be overriden in the theme to show something more appropriate
+ * then a pink background.
+ */
+.metadata-record-unpublished {
+	background-color: #FFCCCC;
+}
+
+
+/**
+ * CSS for the metadata records' page.
+ */
+.metadata-record {
+	margin-bottom: 0.5em;
+}
+
+.metadata-record .map {
+	width: 440px;
+	float: right;
+	margin-left: 1em;
+}
+
+.metadata-record .map #map {
+	height: 440px;
+	border: 1px solid #000000;
+	margin-bottom: 1em;
+}
+
+.metadata-record .preview-image {
+	float: left;
+	margin-right: 1em;
+}
+
+.metadata-record .metadata {
+	clear: both;
+}
+
+.metadata-record .metadata .identification-info {
+	width: 490px; /* Overriden in the theme if innapropriate */
+	float: left;
+}
+.metadata-record .metadata .distribution-info {
+	width: 440px; /* Same as the map */
+	float: right;
+}
+
+.metadata-record .label {
+	font-weight: bold;
+}
+
+.metadata-record .responsible-parties .organisations {
+	font-style: italic;
+}
+
+.metadata-record .collection-dates {
+	font-size: 0.8em;
+}
+
+/* Buttons */
+.metadata-record .buttons {
+	clear: both;
+	text-align: center;
+}
+.metadata-record .buttons .button {
+	display: inline-block;
+	width: 180px;
+	text-shadow: 1px 1px 0px black;
+	font-weight: bold;
+	border: 1px solid #000000;
+	border-radius: 2px;
+	color: white;
+	background-color: #2e8ae6;
+}
+
+/* Keywords */
+.metadata-record .keywords {
+	margin-top: 20px;
+	font-size: 0.6em;
+}
+
+.metadata-record .keywords .label::after {
+	content: ":";
+}
+
+.metadata-record .keywords ul {
+	list-style: none;
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+
+.metadata-record .keywords li {
+	display: inline;
+	list-style: none;
+	padding: 0;
+}
+
+.metadata-record .keywords li::after {
+	content: " | ";
+}
+
+.metadata-record .keywords li.last::after {
+	content: "";
+}

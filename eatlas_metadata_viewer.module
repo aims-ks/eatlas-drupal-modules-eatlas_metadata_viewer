@@ -1,0 +1,407 @@
+<?php
+
+define('EATLAS_METADATA_DATA_LIBRARIES_PATH', 'sites/all/libraries/');
+
+/**
+ * Implements: hook_menu().
+ * Module configuration
+ *   https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_menu/7
+ */
+function eatlas_metadata_viewer_menu() {
+	$settings = eatlas_metadata_viewer_load_settings();
+
+	$items = array();
+
+	// NOTE: admin/config/eatlas is defined in "eatlas_commons"
+	$items['admin/config/eatlas/eatlas_metadata_viewer'] = array(
+		'title' => 'Metadata Viewer settings',
+		'description' => 'eAtlas Metadata Viewer module settings',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('_eatlas_metadata_viewer_settings'),
+		'access arguments' => array('access administration pages'),
+		'file' => 'eatlas_metadata_viewer.admin.inc'
+	);
+
+	if (!empty($settings) && property_exists($settings, 'public_path') && !empty($settings->public_path)) {
+		// The path do not need to be cleaned at this point since
+		// it has been cleaned before been saved. But the value could
+		// had been modified by another process, so it's better to be
+		// safe than sorry. Also, this function is only called
+		// after a "clear cache" so we can do more fancy things here.
+		$path = _eatlas_metadata_viewer_clean_path($settings->public_path);
+
+		// Find out where the UUID will be in the URL
+		$uuid_position = substr_count($path, '/') + 1;
+
+		$items["${path}/%"] = array(
+			// The page callback also invokes drupal_set_title() in case
+			// the menu router's title is overridden by a menu link.
+			'page callback' => '_eatlas_metadata_viewer_record_view',
+			'page arguments' => array($uuid_position),
+			'access arguments' => array('view published eatlas metadata records'),
+			'file' => 'record/eatlas_metadata_viewer_record.inc'
+		);
+	}
+
+	return $items;
+}
+
+/**
+ * Implements: hook_permission().
+ * Module permissions
+ *   https://api.drupal.org/api/drupal/modules%21system%21system.api.php/function/hook_permission/7
+ */
+function eatlas_metadata_viewer_permission() {
+	return array(
+		'view published eatlas metadata records' => array(
+			'title' => t('View published metadata records'),
+			'description' => t('Permission to view a metadata record. This permission should be given to everyone.')
+		),
+		'view unpublished eatlas metadata records' => array(
+			'title' => t('View unpublished metadata records'),
+			'description' => t('Gives the ability to preview metadata records before they are published.<br/>'),
+			'restrict access' => TRUE
+		)
+	);
+}
+
+// Used to clean-up the "public_path" variable.
+function _eatlas_metadata_viewer_clean_path($path) {
+		// Remove trailing spaces and slashes
+		$path = trim($path, " \t\n\r\0\x0B/");
+
+		// Remove duplicate slashes
+		$path = preg_replace('~//+~', '/', $path);
+
+		return $path;
+}
+
+/**
+ * Implements hook_theme().
+ * Define custom themable template.
+ */
+function eatlas_metadata_viewer_theme() {
+	$templates_path = drupal_get_path('module', 'eatlas_metadata_viewer') . '/templates';
+	return array(
+		// metadata-record.tpl.php
+		// Called in record/eatlas_metadata_viewer_record.inc "_eatlas_metadata_viewer_record_view"
+		'metadata_record' => array(
+			'template' => 'metadata-record',
+			'path' => $templates_path,
+			'type' => 'theme',
+			'variables' => array(
+				'title' => NULL,
+				'body' => NULL,
+				'authors' => NULL,
+				'custodians' => NULL,
+				'links' => NULL,
+				'license' => NULL,
+				'keywords' => NULL
+			)
+		)
+	);
+}
+
+function eatlas_metadata_viewer_create_empty_settings() {
+	$settings = new stdClass();
+	$settings->database_host = NULL;
+	$settings->database_name = NULL;
+	$settings->database_user = NULL;
+	$settings->database_pass = NULL;
+	$settings->public_path = NULL;
+	$settings->map_wms_server = NULL;
+	$settings->map_wms_layer = NULL;
+	$settings->map_centre_lat = NULL;
+	$settings->map_centre_lon = NULL;
+	$settings->map_zoom = NULL;
+
+	return $settings;
+}
+
+// https://api.drupal.org/api/drupal/includes%21bootstrap.inc/function/variable_get/7
+function eatlas_metadata_viewer_load_settings() {
+	$settings = eatlas_metadata_viewer_create_empty_settings();
+
+	foreach ($settings as $key => $value) {
+		$settings->{$key} = variable_get("eatlas_metadata_viewer_${key}");
+	}
+
+	return $settings;
+}
+
+function eatlas_metadata_viewer_get_map_library() {
+	$map_libraries = array();
+
+	$leaflet_path = EATLAS_METADATA_DATA_LIBRARIES_PATH . 'leaflet/leaflet.js';
+	$leaflet_plugin_kml_path = EATLAS_METADATA_DATA_LIBRARIES_PATH . 'leaflet-plugins/layer/vector/KML.js';
+	$leaflet_plugins = array(
+		$leaflet_plugin_kml_path
+	);
+	$leaflet_css = array(
+		EATLAS_METADATA_DATA_LIBRARIES_PATH . 'leaflet/leaflet.css'
+	);
+	$leaflet_version = _eatlas_metadata_viewer_get_leaflet_version($leaflet_path);
+	$leaflet = array(
+		'name' => 'Leaflet',
+		'path' => $leaflet_path,
+		'version' => $leaflet_version,
+		'instructions' => array(
+			t('Download Leaflet from !link',
+				array('!link' => l('leafletjs.com', 'http://leafletjs.com/',
+					array('attributes' => array('target' => '_blank'))))),
+			t('Extract the zip archive in your library folder: !folder', array('!folder' => EATLAS_METADATA_DATA_LIBRARIES_PATH)),
+			t('The library should be found at: !path', array('!path' => $leaflet_path)),
+			// NOTE: KML are not common enough in records to justify the
+			//   bandwidth overhead of the plugin.
+			/*
+			t('Plugins for KML can be found at: !link and installed in !folder',
+				array(
+					'!link' => l('github.com/shramov/leaflet-plugins',
+						'https://github.com/shramov/leaflet-plugins',
+						array('attributes' => array('target' => '_blank'))),
+					'!folder' => EATLAS_METADATA_DATA_LIBRARIES_PATH . 'leaflet-plugins/'
+				)
+			),
+			t('The plugin library should be found at: !path', array('!path' => $leaflet_plugin_kml_path)),
+			*/
+		)
+	);
+
+	// Add plugins
+	foreach ($leaflet_plugins as $plugin_file) {
+		if (file_exists($plugin_file)) {
+			if (!isset($leaflet['plugins'])) {
+				$leaflet['plugins'] = array();
+			}
+			$leaflet['plugins'][] = $plugin_file;
+		}
+	}
+
+	// Add CSS files
+	foreach ($leaflet_css as $css_file) {
+		if (file_exists($css_file)) {
+			if (!isset($leaflet['css'])) {
+				$leaflet['css'] = array();
+			}
+			$leaflet['css'][] = $css_file;
+		}
+	}
+
+	$map_libraries[] = $leaflet;
+
+	// We could add other libraries here, like OpenLayers
+
+	return $map_libraries;
+}
+
+function _eatlas_metadata_viewer_get_leaflet_version($library) {
+	if (!file_exists($library)) {
+		return NULL;
+	}
+
+	$library_version = NULL;
+	$library = fopen($library, 'r');
+	$max_lines = 8;
+	while ($max_lines && $line = fgets($library, 500)) {
+		// version="0.7.3"
+		if (preg_match('@version=[\"|\']([\d\.]+)[\"|\']@', $line, $version)) {
+			$library_version = $version[1];
+			break;
+		}
+		$max_lines--;
+	}
+	fclose($library);
+	return $library_version;
+}
+
+
+// https://api.drupal.org/api/drupal/includes%21bootstrap.inc/function/variable_set/7
+function eatlas_metadata_viewer_save_settings($settings) {
+	if (!empty($settings)) {
+		foreach ($settings as $key => $value) {
+			// Clean the public_path
+			if ($key === 'public_path') {
+				$value = _eatlas_metadata_viewer_clean_path($value);
+			}
+
+			// Save all values in variable.
+			// Exception for password: If empty, kept the previous one.
+			if ($key !== 'database_pass' || !empty($value)) {
+				variable_set("eatlas_metadata_viewer_${key}", $value);
+			}
+		}
+	}
+}
+
+// https://api.drupal.org/api/drupal/includes%21bootstrap.inc/function/variable_del/7
+function eatlas_metadata_viewer_delete_settings() {
+	$settings = eatlas_metadata_viewer_create_empty_settings();
+
+	foreach ($settings as $key => $value) {
+		variable_del("eatlas_metadata_viewer_${key}");
+	}
+}
+
+function eatlas_metadata_viewer_render_responsible_parties($responsible_parties) {
+	$pre_rendered_responsible_parties = array();
+	for ($i=0; $i<count($responsible_parties); $i++) {
+		$responsible_party = $responsible_parties[$i];
+
+		$party_info = array();
+		if (!empty($responsible_party['names'])) {
+			$party_info[] = '<span class="names">' . check_plain(implode(', ', $responsible_party['names'])) . '</span>';
+		}
+		if (!empty($responsible_party['positions'])) {
+			$party_info[] = '<span class="positions">' . check_plain(implode(', ', $responsible_party['positions'])) . '</span>';
+		}
+		if (!empty($responsible_party['organisations'])) {
+			$party_info[] = '<span class="organisations">' . check_plain(implode(', ', $responsible_party['organisations'])) . '</span>';
+		}
+		if (!empty($responsible_party['emails'])) {
+			$emails = array();
+			foreach($responsible_party['emails'] as $email) {
+				$emails[] = l($email, "mailto:${email}");
+			}
+			$party_info[] = '<span class="emails">' . implode(', ', $emails) . '</span>';
+		}
+
+		if (!empty($party_info)) {
+			$pre_rendered_responsible_parties[] = implode('<br/>', $party_info);
+		}
+	}
+	return eatlas_metadata_viewer_render_collection($pre_rendered_responsible_parties);
+}
+
+function eatlas_metadata_viewer_render_resource_constraints($resource_constraints) {
+	return eatlas_metadata_viewer_render_collection($resource_constraints, TRUE);
+}
+
+function eatlas_metadata_viewer_render_links($links) {
+	$pre_rendered_links = array();
+	for ($i=0; $i<count($links); $i++) {
+		$link = $links[$i];
+
+		$label;
+		if (!empty($link['description'])) {
+			$label = $link['description'];
+		} elseif (!empty($link['name'])) {
+			$label = $link['name'];
+		} else {
+			$label = $link['url'];
+		}
+
+		$pre_rendered_links[] = l($label, $link['url']);
+	}
+
+	return eatlas_metadata_viewer_render_collection($pre_rendered_links);
+}
+
+function eatlas_metadata_viewer_render_parent_records($parent_records) {
+	$settings = eatlas_metadata_viewer_load_settings();
+
+	if (!empty($settings) && property_exists($settings, 'public_path') && !empty($settings->public_path)) {
+		$path = _eatlas_metadata_viewer_clean_path($settings->public_path);
+
+		$pre_rendered_parent_records = array();
+		for ($i=0; $i<count($parent_records); $i++) {
+			$url = $path . '/' . $parent_records[$i];
+			$label = $parent_records[$i]; // TODO Get it from the search index
+
+			$pre_rendered_parent_records[] = l($label, $url);
+		}
+
+		return eatlas_metadata_viewer_render_collection($pre_rendered_parent_records);
+	}
+	return NULL;
+}
+
+function eatlas_metadata_viewer_render_child_records($child_records) {
+	$settings = eatlas_metadata_viewer_load_settings();
+
+	if (!empty($settings) && property_exists($settings, 'public_path') && !empty($settings->public_path)) {
+		$path = _eatlas_metadata_viewer_clean_path($settings->public_path);
+
+		$pre_rendered_child_records = array();
+		for ($i=0; $i<count($child_records); $i++) {
+			$child_record = $child_records[$i];
+			$url = $path . '/' . $child_record['uuid'];
+			$label = $child_record['label'];
+
+			$pre_rendered_child_records[] = l($label, $url);
+		}
+
+		return eatlas_metadata_viewer_render_collection($pre_rendered_child_records);
+	}
+	return NULL;
+}
+
+function eatlas_metadata_viewer_render_temporal_extents($temporal_extents) {
+	// https://api.drupal.org/api/drupal/includes%21common.inc/function/format_date/7
+	$drupal_date_format = 'short'; // short, medium or long
+
+	$pre_rendered_temporal_extents = array();
+	for ($i=0; $i<count($temporal_extents); $i++) {
+		$temporal_extent = $temporal_extents[$i];
+
+		$begin = $temporal_extent['begin'];
+		$end = $temporal_extent['end'];
+
+		$markup;
+		if (empty($end)) {
+			$markup = t('On !date', array(
+					'!date' => format_date($begin, $drupal_date_format)));
+		} else {
+			$markup = t('Between !begindate and !enddate', array(
+					'!begindate' => format_date($begin, $drupal_date_format),
+					'!enddate' => format_date($end, $drupal_date_format)));
+		}
+
+		$pre_rendered_temporal_extents[] = $markup;
+	}
+
+	return eatlas_metadata_viewer_render_collection($pre_rendered_temporal_extents);
+}
+
+function eatlas_metadata_viewer_render_keywords($keywords) {
+	$pre_rendered_keywords = array();
+	for ($i=0; $i<count($keywords); $i++) {
+		$keyword = $keywords[$i];
+
+		// TODO Link the keywords
+		$pre_rendered_keywords[] = l($keyword, '/');
+	}
+
+	return eatlas_metadata_viewer_render_collection($pre_rendered_keywords);
+}
+
+function eatlas_metadata_viewer_render_collection($collection, $sanitise = FALSE) {
+	$count = count($collection);
+	if (!$count) {
+		return '';
+	}
+
+	$markup = '';
+	for ($i=0; $i<$count; $i++) {
+		$class_name = '';
+		if ($i === 0) {
+			$class_name .= 'first ';
+		}
+		if ($i === $count-1) {
+			$class_name .= 'last ';
+		}
+		$class_name .= ($i % 2 === 0) ? 'odd ' : 'even ';
+
+		if ($class_name) {
+			$markup .= "<li class=\"${class_name}\">";
+		} else {
+			$markup .= '<li>';
+		}
+
+		$markup .= ($sanitise) ? check_plain($collection[$i]) : $collection[$i];
+
+		$markup .= '</li>';
+	}
+	return $markup;
+}
+
+?>

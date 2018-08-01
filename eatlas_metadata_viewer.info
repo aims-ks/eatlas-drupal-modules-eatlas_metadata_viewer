@@ -1,0 +1,21 @@
+; $Id$
+name = eAtlas Metadata Viewer
+description = This module harvest and display the metadata records contained in a local installation of GeoNetwork.
+core = 7.x
+
+files[] = eatlas_metadata_viewer.module
+
+stylesheets[all][] = css/eatlas_metadata_viewer.css
+scripts[] = js/eatlas_metadata_viewer_map.js
+
+package = eAtlas
+
+configure = admin/config/eatlas/eatlas_metadata_viewer
+
+dependencies[] = eatlas_commons (>=1.4)
+
+; Attributes used by the update module.
+; There fields needs to be removed if the module is migrated to Drupal.org
+project status url = "http://drupal.eatlas.org.au/modules/eatlas"
+version = "7.x-0.3-alpha"
+project = "eatlas_metadata_viewer"

@@ -1,0 +1,214 @@
+TODO:
+	Don't use array_unique to remove duplicate dates (it removes everything)
+	Search index
+	Parent record label (grab from search index)
+	Child records (grab from search index)
+	Wiki format - Parse content to add links on URL (432926ac-7e50-4498-81f1-1db83569f9d6, f666e4e6-54f7-4fde-bb03-eed790956d3f, a5a02dc8-16b4-4b50-abad-af4a1c1e9c49) and maybe format bullet lists (e0647a27-74e3-464c-b3df-88337e9dc9ee, 02964150-af4e-4970-b137-ec886202db94)
+	Prevent mouse wheel on the map?
+	Add "How to cite this metadata" at the end of the template
+	Enlarge preview image when clicked
+
+
+Records problem
+	5abb09c1-4bc3-4b4d-b1fb-3d77c1e00fc2 <=== 404: By design; NWAtlas only!
+	5bb9a340-4ade-11dc-8f56-00008a07204e <=== FIXED: SQL Buffer overflow (probably). XML String returned by the SQL query is truncated.
+
+Records with dates only shown in Drupal
+	18916872-b710-41b8-becd-0fda1611f413 <=== Duplicated dates
+	1445b34e-f6ff-4a0f-96d4-e885ce697614 <=== Duplicated dates
+
+	73f2acfd-1cb7-48a5-a3e4-bad38939e4e9
+	1bd5d34f-5729-4c16-ab6e-9038a8f6fbd1
+
+
++----------------------------------------+--------------+-----------------------+-----------------------+
+| uuid                                   | GeoNetwork   | MetadataViewer Drupal | MetadataViewer webapp |
++----------------------------------------+--------------+-----------------------+-----------------------+
+| 68af4c20-516f-4e4c-bf20-aba655394855   | Almost empty | Empty                 | ERROR                 |
+| 4ab840c6-da0f-41b5-840e-d74b8e48fe0e   | Almost empty | Empty                 | ERROR                 |
+| f55b4dbc-a944-4246-ba12-d6e5110dd8c7   | Ok           | MISSING PARENT/CHILD  | MISSING DATES         | NOTE: "Lafond, Rai, Dr" is that the correct name?
+| 8a49e81b-0f88-43b4-8599-fc371da4063a   | DOUBLE EXTENT| MISSING PARENT/CHILD..| MISSING DATES         |
+| 5f8f58a6-9ba4-4c47-bf69-6c909849fbd2   | Ok           | Ok                    | MISSING DATES         |
+| df464abf-59be-41cc-a271-d17035582c4c   | Ok           | OK                    | MISSING DATES         |
+| cb0f7df5-ffb0-45a7-a384-adec023f22f7   |              | Ok                    | MISSING DATES ...     |
+| a33be784-6746-4820-9bf8-30d48b9721f5   |              | Ok                    | Ok                    |
+| a2e0841c-a1bb-41d9-a4d9-6dee62bf8a25   |              | Ok                    | Ok                    |
+| e0647a27-74e3-464c-b3df-88337e9dc9ee   |              | Ok                    | Ok                    |
+| 432926ac-7e50-4498-81f1-1db83569f9d6   | WRONG EXTENT | Ok                    | Ok                    |
+| 79c0ce91-0b8d-4591-b960-d0af46b052ea   |              | Ok                    | Ok                    |
+| 02964150-af4e-4970-b137-ec886202db94   |              | Ok                    | Ok                    |
+| 1409191c-8b02-4f9e-855e-4410bdcaea23   |              | Ok                    | Ok                    |
+| f666e4e6-54f7-4fde-bb03-eed790956d3f   |              | Ok                    | Ok                    |
+| 053f0b32-47cc-4a3f-8325-b37feb33c0e3   | BROKEN LAYER | Ok                    | Ok                    | <== ea:GBR_NERP-TE-13.1_eAtlas_NRM-Regions-GBRMP-2012
+| 869d75cf-3a06-4154-8705-2b7f782827d8   |              | Ok                    | Ok                    |
+| 2d0e9243-a1cb-4a6c-a813-e893ed2f3d17   |              | Ok                    | Ok                    |
+| 6cc54c0f-4dea-4adf-be81-438a82f68a50   |              |                       |                       |
+| b4ddc121-0edf-42de-b2ec-fcfb044578ca   |              |                       |                       |
+| 9b42196a-7249-468c-ae2c-dfcbcbf604cb   |              |                       |                       |
+| e6537201-3009-4b37-83c6-1da8e4c61191   |              |                       |                       |
+| f0022257-4ae1-4fbb-a5ca-8b18485a11ea   |              |                       |                       |
+| c4d8abcc-650c-46de-ac06-e91985b368e7   |              |                       |                       |
+| ac8e8e4f-fc0e-4a01-9c3d-f27e4a8fac3c   |              |                       |                       |
+| 01c73952-3e14-4e9c-b39c-b3ff6352ffd8   |              |                       |                       |
+| 4584d159-8bc2-4494-876b-12683a1a7b5e   |              |                       |                       |
+| 1a46774e-a3ac-4982-b08b-94ce1ad8d45c   |              | Ok                    | Ok                    |
+| b03125eb-176c-45d2-9e47-bd07fad0f96a   |              |                       |                       |
+| 1762af85-49a6-481c-a77d-105026b75b02   |              |                       |                       |
+| 2181cd95-adf9-40c2-8c36-117a4e86dfac   |              |                       |                       |
+| 239c5d24-f141-4cba-8311-aa43b46ef701   |              |                       |                       |
+| 2987b7c3-c575-499c-a896-c17c46da0c39   |              |                       |                       |
+| cf255645-3e1e-4b30-8f32-f39c1859b277   |              |                       |                       |
+| e0e41db0-2846-4afd-a244-8d286a84882b   |              |                       |                       |
+| f5b17f75-3472-45ec-b7d0-c5ebc3ffde73   |              |                       |                       |
+| 1f1a8cf7-027c-434b-917c-87a961ea9239   |              |                       |                       |
+| c64c924a-61e9-472f-a336-3cc0aa8271a9   |              |                       |                       |
+| 70e21d20-cc5e-4d1d-9d2b-7b08f4b061a2   |              |                       |                       |
+| 284c3108-accc-4739-a4b1-4ec13c3cc0c6   |              |                       |                       |
+| ea0a81fd-c864-4035-b51a-e214fa0a57b4   |              | Ok                    | Ok                    | <==== Distributor link
+| 2cf689a9-2f4e-4658-b838-9bdca45919ea   |              |                       |                       |
+| 91c7c183-80bf-4f13-9d3f-33d11c9cde48   |              |                       |                       |
+| 8927b8ed-28da-4ddf-9df0-7754a68d62a4   |              |                       |                       |
+| 0c63dafd-0ed3-48a4-93cc-63c1a8b8399f   |              |                       |                       |
+| bda9acbd-960f-415d-8305-09170f9a707f   |              |                       |                       |
+| e50e9dd9-13c5-4a6a-ba7e-2c441fc69ccd   |              |                       |                       |
+| 674157b0-157e-46d8-be35-fd30c23dbbc1   |              |                       |                       |
+| 48da6b62-5c1f-4a83-91f2-23590781d109   |              | Ok                    | Ok                    |
+| 79b6a4cb-db1f-4c0d-a38f-6cc0b191143b   |              |                       |                       |
+| 82f4c977-caf3-497c-92c8-d2db7a18be89   |              |                       |                       |
+| 85963b15-504f-444c-860b-3ce58de5ae6e   |              |                       |                       |
+| 708fd68d-f7c7-421c-a4a8-96d5548f6bbc   |              |                       |                       |
+| 4f53b370-0b46-4750-acc2-e117ff9b3545   |              |                       |                       |
+| a000b496-8b71-4f5f-b2bd-b770de0c8804   |              |                       |                       |
+| fd79b48d-97a3-4f19-9e5f-6ab76a452356   |              |                       |                       |
+| ce58a4c2-c993-434a-aa57-62cfa919a2ab   |              |                       |                       |
+| bcecca08-298d-4c89-901c-97e671fa2a24   |              |                       |                       |
+| d80d59af-7247-4d6b-93b4-f7d86c3e4021   |              | Ok                    | Ok                    |
+| 5dc65f37-13c8-4a15-a69b-9a046e30a31d   |              |                       |                       |
+| 71127e4d-9f14-4c57-9845-1dce0b541d8d   |              |                       |                       |
+| 12fdf335-f950-401c-a6c5-f0537df5ca85   |              |                       |                       |
+| 7499f43d-1d02-492d-96ed-8ba49e348583   |              |                       |                       |
+| cfa69354-e845-4409-85c1-030643a239a8   |              |                       |                       |
+| d134f9c2-5047-4ccf-a8ee-137e8cf9afdc   |              |                       |                       |
+| 094cb0e2-e9fd-4506-b32c-d42f43cf9254   |              |                       |                       |
+| 200aba6b-6fb6-443e-b84b-86b0bbdb53ac   |              |                       |                       |
+| 92e4a530-6cbc-456b-918d-55d97c610e01   |              |                       |                       |
+| 25685ba5-6583-494f-974d-cce2f3429b78   |              |                       |                       |
+| 917c772b-974b-4c71-a4a1-8481596eb1a5   |              |                       |                       |
+| b53a9309-96b3-48af-8cdb-bb37047d8c9a   |              | Ok                    | Ok                    |
+| ac57aa5a-233b-4c2c-bd52-1fb40a31f639   |              |                       |                       |
+| 9fdeb5b3-b407-49e8-ba71-cb10eb31615b   |              |                       |                       |
+| ae0c35a4-8b42-4119-8c65-f8b978ad3ba5   |              |                       |                       |
+| 878a1451-5d6e-4c31-9269-f7cb0e5f5989   |              |                       |                       |
+| 41dd5285-88ec-40c3-be85-f3e0b7c80c27   |              |                       |                       |
+| a839edf0-9bff-469d-a43c-d5c17ba2c57c   |              |                       |                       |
+| f7ffcb61-644f-4be3-9194-03be06d4bbd9   |              |                       |                       |
+| 45d0c70c-ee4d-4727-8d86-daacb2d29156   |              |                       |                       |
+| ce9d3908-9e7f-487d-9b58-bab5f2dfaff7   |              |                       |                       |
+| bd292772-4fef-4fa0-87b2-bf35367c06f2   | Ok           | Ok                    | Ok                    |
+| 115346a9-f94b-487a-a9cb-d338bae0137f   |              |                       |                       |
+| eaece897-3e9a-47ea-94cb-ee94195dac98   |              |                       |                       |
+| 951d92e4-fbbf-46bf-a3d2-d8d2fd80edaa   |              |                       |                       |
+| 5b4976dd-d158-4b71-82df-418fb9987cae   |              |                       |                       |
+| 71c8380e-4cdc-4544-98b6-8a5c328930ad   |              |                       |                       |
+| f870ce32-eb6e-45bf-9283-857e35da1645   |              |                       |                       |
+| 0436e7b2-04fe-4c12-8787-8da6c02cfa35   |              |                       |                       |
+| da677b80-a768-4e8c-baa9-3a4751ec7d54   |              |                       |                       |
+| 1297e33c-bb09-4733-b483-b80bca6e2d96   |              |                       |                       |
+| af907492-22f8-4073-90cb-f60f524cce6a   |              |                       |                       |
+| 47f71b15-8442-41d8-9357-4a09ee073ba1   |              |                       |                       |
+| d06fe370-6c5c-494f-b480-9f013fb5e3a9   |              |                       |                       |
+| {3282918c-098c-442f-9109-f6f524d850de} | HTML         | Ok                    | ERROR (not mcp?)      | <=== HTML in data usage
+| c4e55d48-1a4f-4c15-adee-d7d016272070   | PUB DRAFT    | Ok                    | NO SANITISATION       | <=== Data need to be sanitised: "Downloaded on <insert appropriate date>." show as "Downloaded on ."
+| 83b01748-7fe5-418b-aa8d-b972ea62dab6   |              | Ok                    | Ok                    |
+| 3b718fb8-3e32-4564-a776-f9e36a8194dc   |              |                       |                       |
+| 7925d99e-7158-4d01-bc5c-c15c61ce0edc   |              |                       |                       |
+| bc667743-3f77-4533-82a7-5b45c317dd89   |              |                       |                       |
+| 25673a26-37b9-430f-8c20-34681e1d9060   |              |                       |                       |
+| 84bcf698-569b-4907-958a-974c262a363c   |              |                       |                       |
+| b192431c-eaa0-4fc9-9b38-9bad86ae917a   |              |                       |                       |
+| f6b7a43c-456c-4a94-8b6e-f84019e693de   |              |                       |                       |
+| 5d5158f3-c63d-42c8-89fb-36ec7073b25d   |              |                       |                       |
+| 80301676-97fb-4bdf-b06c-e961e5c0cb0b   |              |                       |                       |
+| 939cb936-68b9-4d9f-925e-f5ce12a3bf34   |              |                       |                       |
+| bbeba305-16f1-4008-9e32-970e7d1c19b7   |              | Ok (date tests)       | Ok                    |
+| 44610fcb-3d08-4b3d-9e9f-fef6556adef7   |              |                       |                       |
+| a05f7892-eae4-7506-e044-00144fdd4fa6   |              |                       |                       |
+| 2a17791d-8175-481b-8d31-c25f02e66ef6   |              |                       |                       |
+| e8854605-d169-44ca-9364-aa5c2c87ff67   |              |                       |                       |
+| 76bae966-7e50-4c57-89a6-dfc4d4efcbef   |              |                       |                       |
+| a2362303-8bd7-45d6-972d-46b20e7f4c6e   |              |                       |                       |
+| 14c29197-0524-436c-9583-515d84999968   |              |                       |                       |
+| 039e74aa-be9b-4935-8160-5c0c5c50e53f   |              |                       |                       |
+| e2c6a628-f6cd-4789-917a-963577af8f95   |              |                       |                       |
+| 242aef9d-8a9a-4b65-8d94-7f2c5b19affa   |              |                       |                       |
+| 0a65682c-1090-49ed-af94-1b152d8cd902   |              |                       |                       |
+| c9aec876-3df7-49e9-b25f-0caca49a55cb   |              |                       |                       |
+| 81e94984-4d5b-44d5-8fd3-e448ace331eb   |              |                       |                       |
+| 21de3e03-e414-40ab-a42e-34c8fa24f5b8   |              |                       |                       |
+| e460254f-2086-4676-ba36-f096f54eb404   |              | Ok                    | PUBLIC UNPUBLISHED    |
+| 05bde62a-70ec-407b-b999-30cf369498af   |              |                       |                       |
+| ab57da3c-8d9c-4f59-985b-cabf8fe29724   |              |                       |                       |
+| 8e8bdbce-6899-4fe5-859e-9296700ad1e3   |              |                       |                       |
+| 18916872-b710-41b8-becd-0fda1611f413   |              |                       |                       |
+| 1445b34e-f6ff-4a0f-96d4-e885ce697614   |              |                       |                       |
+| 505a5e46-f385-4e58-82db-ccab1fc31427   |              |                       |                       |
+| 5e626bfe-c357-4635-b256-dde0cc9e1de0   |              |                       |                       |
+| c6219bd6-f419-48e5-903f-2439baa2192d   |              |                       |                       |
+| f9163e51-247e-4bbf-88ec-32fe1616195a   |              |                       |                       |
+| f6bb837a-7613-428b-a349-630ef54d3c5d   |              |                       |                       |
+| 991a4ebb-43b1-429f-bc06-4c21cb464066   |              |                       |                       |
+| 20156552-4124-4f5d-807e-fd66dd4cd1b8   |              |                       |                       |
+| 7cc55d93-9d79-42ef-bc7f-f4e0f29f87bd   |              |                       |                       |
+| 0b97d8e9-1714-4758-bc0d-0d1ea5d1cc0c   |              |                       |                       |
+| 04280028-0cb8-468e-a2f5-6909802758ca   |              | Ok                    | PUBLIC UNPUBLISHED    | <=== Duplicated temporal extent
+| a663026a-f627-42cd-bfd5-b71f26e6dfd0   |              |                       |                       |
+| 1d44ddc4-f729-45af-968a-9e4f9c564c95   |              |                       |                       |
+| d0ac609b-490e-47be-a857-4c7fc3775801   |              |                       |                       |
+| 372985cc-703a-462d-bed2-a326acd530cc   |              |                       |                       |
+| f49c5d09-3c50-4d0c-b779-f2dd3642bfcf   |              |                       |                       |
+| 1d0c4d84-ba83-4a8e-be6f-b792cc552a5b   |              |                       |                       |
+| 4873eb39-c41e-431b-a2b7-159f02961fd2   |              |                       |                       |
+| 9da930aa-1b72-45a6-9bff-03f57b028370   |              |                       |                       |
+| bfc4e6ee-25db-410e-8590-63762f901829   |              |                       |                       |
+| e1749d34-98b1-4abd-9eae-5af654735571   |              |                       |                       |
+| 0c26dc2e-2a64-4e9c-ad10-cdbf8ed7d758   |              |                       |                       |
+| ca8896a9-0a28-401b-aa0d-5ef8c2ab57c8   |              |                       |                       |
+| fe100cb3-9b29-4e6b-a8e1-0434631064fa   |              |                       |                       |
+| df7012eb-a23f-4cf2-b92d-6fff77718987   |              | NO WMS LAYER          | Ok                    | <=== Legacy GeoServer server does not support EPSG:3857 (but it does support EPSG:900913)
+| b0cba902-4e15-4d23-a568-e7cd4b201aac   |              | NO BG LAYER           | Ok                    | <=== Background layer used has issue with hillshading, creating a broken map at that zoom level
+| 771f26be-22cc-4601-9ddf-8cc7cb75c5d9   |              | Ok                    | No data sanitisation  |
+| 215d5fc3-edbd-4969-83fd-ee7379d293c5   |              |                       |                       |
+| 73f2acfd-1cb7-48a5-a3e4-bad38939e4e9   |              |                       |                       |
+| 17dfb308-188c-4da5-816b-6ea0d9e115d8   |              |                       |                       |
+| 42038533-e995-4cec-a774-29d06401fdf3   |              |                       |                       |
+| 1bd5d34f-5729-4c16-ab6e-9038a8f6fbd1   |              |                       |                       |
+| 237ac542-8c6e-4219-98ce-6c875ce9c05f   |              |                       |                       |
+| 8ce6369f-4645-4fb5-a2a9-827ad3c16dc1   |              |                       |                       |
+| cc3b8b00-cffe-4fa5-ac3c-06e41eeb0cf6   |              |                       |                       |
+| 7548432f-36d3-4333-a3c5-49a7b0c311cf   |              |                       |                       |
+| 6a5c611e-f854-462e-8d85-0d4163188399   |              |                       |                       |
+| 3beb7840-f29e-4eb7-a485-a3b57d6f94e8   |              |                       |                       |
+| 6f61137b-8baa-40fa-bde1-670655254afa   |              |                       |                       |
+| 66f375cb-ff20-437d-bb73-d636cb62a2df   |              |                       |                       |
+| 95c25b56-6459-43ac-8d01-175fc3f173cc   |              |                       |                       |
+| 450537e4-c954-41d8-b094-40a13393c59b   |              |                       |                       |
+| 47c1c401-3c3d-452d-8c40-b17410dcc12a   |              | NO WMS LAYER          | Ok                    | <=== Legacy GeoServer server does not support EPSG:3857 (but it does support EPSG:900913)
+| ae8b143e-6a50-4c16-ae23-2a12dc1d72e4   |              |                       |                       |
+| b1544bb0-8d90-4241-aba1-efab9fca88cb   |              |                       |                       |
+| 865e5c88-b2db-44a4-a0d7-d0299141bbf6   |              |                       |                       |
+| fa849a28-0fde-4d10-93f1-f612b217fac1   |              |                       |                       |
+| b6c63843-0925-44d1-a94a-1b7d7125dddb   |              |                       |                       |
+| 430ad915-1844-4d1b-ba19-090c2f9395a5   |              |                       |                       |
+| 7f2197cd-cf48-4df6-8421-579110723057   |              |                       |                       |
+| f16e1b55-afc6-44fb-8eae-413fb91ff727   |              |                       |                       |
+| d68ab2c0-6ad1-4678-8ee2-3d324831c19c   |              |                       |                       |
+| 3612F932-0763-49D5-9C2E-0D3FEC38BCEB   |              |                       |                       |
+| 1475BCB0-92DF-40A1-A696-379DE6F94D89   |              |                       |                       |
+| 2C74A20A-3AF0-4412-A745-E0BEC0D3D289   |              |                       |                       |
+| 58A48FF3-8D97-47A6-8752-BAE2A07ECEEA   |              |                       |                       |
+| 0ac5955a-912e-469d-b0ee-ad110f1a052d   |              |                       |                       |
+| 9793add6-c663-4bff-a2af-4f0d0f2a062b   |              | Ok                    | MISSING DISTRIBUTOR   |
+| 0a19774f-c39f-4e02-a7c5-8a5c56118e4c   |              |                       |                       |
+| 7525e756-34d5-410f-aeb1-9596627e2f87   |              |                       |                       |
++----------------------------------------+--------------+-----------------------+-----------------------+
+186 rows in set (0.00 sec)
