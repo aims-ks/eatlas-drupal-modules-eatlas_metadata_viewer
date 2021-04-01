@@ -43,52 +43,52 @@ if (!empty($supplemental_informations)) {
 
 
 $publication_links = $record->getPublicationLinks();
-$publication_links_count = count($publication_links);
+$publication_links_count = $publication_links ? count($publication_links) : 0;
 
 $related_links = $record->getRelatedLinks();
-$related_links_count = count($related_links);
+$related_links_count = $related_links ? count($related_links) : 0;
 
 
 // Parents / Children
 
 $parent_records = $record->getParentRecords();
-$parent_records_count = count($parent_records);
+$parent_records_count = $parent_records ? count($parent_records) : 0;
 
 // Sent to the template from eatlas_metadata_viewer_record.inc
-$child_records_count = count($child_records);
+$child_records_count = $child_records ? count($child_records) : 0;
 
 
 // Temporal extents
 
 $temporal_extents = $record->getTemporalExtents();
-$temporal_extents_count = count($temporal_extents);
+$temporal_extents_count = $temporal_extents ? count($temporal_extents) : 0;
 
 
 // Responsible parties
 
 $authors = $record->getAuthors();
-$authors_count = count($authors);
+$authors_count = $authors ? count($authors) : 0;
 
 $custodians = $record->getCustodians();
-$custodians_count = count($custodians);
+$custodians_count = $custodians ? count($custodians) : 0;
 
 $points_of_contact = $record->getPointsOfContact();
-$points_of_contact_count = count($points_of_contact);
+$points_of_contact_count = $points_of_contact ? count($points_of_contact) : 0;
 
 $owners = $record->getOwners();
-$owners_count = count($owners);
+$owners_count = $owners ? count($owners) : 0;
 
 $distributors = $record->getDistributors();
-$distributors_count = count($distributors);
+$distributors_count = $distributors ? count($distributors) : 0;
 
 $metadata_contacts = $record->getMetadataContacts();
-$metadata_contacts_count = count($metadata_contacts);
+$metadata_contacts_count = $metadata_contacts ? count($metadata_contacts) : 0;
 
 $principal_investigators = $record->getPrincipalInvestigators();
-$principal_investigators_count = count($principal_investigators);
+$principal_investigators_count = $principal_investigators ? count($principal_investigators) : 0;
 
 $co_investigators = $record->getCoInvestigators();
-$co_investigators_count = count($co_investigators);
+$co_investigators_count = $co_investigators ? count($co_investigators) : 0;
 
 
 // Resource constraints
@@ -97,10 +97,14 @@ $use_limitations = $record->getUseLimitations();
 $access_constraints = $record->getAccessConstraints();
 $use_constraints = $record->getUseConstraints();
 $other_constraints = $record->getOtherConstraints();
-$resource_constraints_count = count($use_limitations) + count($access_constraints) + count($use_constraints) + count($other_constraints);
+$resource_constraints_count =
+	($use_limitations ? count($use_limitations) : 0) +
+	($access_constraints ? count($access_constraints) : 0) +
+	($use_constraints ? count($use_constraints) : 0) +
+	($other_constraints ? count($other_constraints) : 0);
 
 $keywords = $record->getKeywords();
-$keywords_count = count($keywords);
+$keywords_count = $keywords ? count($keywords) : 0;
 ?>
 
 <div class="metadata-record<?php print ($record->isPublished() ? '' : ' metadata-record-unpublished'); ?>">
